@@ -1,0 +1,8 @@
+#netbeans
+/nbproject/
+/build/
+ 
+ 
+#mac
+.Trashes
+.DS_STORE
