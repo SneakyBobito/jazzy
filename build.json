@@ -4,7 +4,6 @@
  
         "public-dir" : ".",
         "files":[
-            "/vendor/teoria.js",
             "/src/Jazzy.js",
             "/src/Bindable.js",
             "/src/Exception.js",

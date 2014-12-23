@@ -50,7 +50,6 @@
     QUnit.test( "Test Entity", function(assert) {
                 
         var A = function(){};
-
         Jazzy.Entity.extends( A ,[
 
             "nameOnly",
@@ -69,43 +68,99 @@
             },
             {
                 "name"    : "importDefault",
-                "import"  : function(v,d){
+                "import" : function(v,d){
                     return "-" + v;
                 },
-                "default"  : "d"
+                "default" : "d"
+            },
+            {
+                "name"    : "entitySimple",
+                "isEntity": true,
+                "type"    : "TestEntityB"
+                
             }
 
         ] );
-
         Jazzy.Entity.registerName("TestEntityA",A);
+        
+        
+        
+        var B = function(){};
+        Jazzy.Entity.extends( B ,[
+            {   
+                "name" : "simple",
+                'export' : function(d){
+                    return "-" + d;
+                }
+            },
+            {
+                "name"    : "entityArray",
+                "isEntity": true,
+                "type"    : "TestEntityC",
+                "isArray" : true,
+                "default" : []
+            }
+        ] );
+        Jazzy.Entity.registerName("TestEntityB",B);
+        
+        var C = function(){};
+        Jazzy.Entity.extends( C ,[
+            {   
+                "name" : "simple"
+            }
+        ] );
+        Jazzy.Entity.registerName("TestEntityC",C);
         
         
         
         var useDefault = Jazzy.createEntity("TestEntityA",{
             "nameOnly" : "a",
-            "importExport" : "b"     
+            "importExport" : "b",
+            "entitySimple" : {
+                'simple' : "subEntitySimpleValue",
+                "entityArray"  : [
+                    {"simple" : "arr1"},
+                    {"simple" : "arr2"},
+                    {"simple" : "arr3"}
+                ]
+            }
+            
         });
+        console.log(useDefault);
         assert.ok( useDefault.nameOnly      === "a" );
         assert.ok( useDefault.withdefault   === "defaultValue" );
         assert.ok( useDefault.importExport  === "-b" );
         assert.ok( useDefault.importDefault === "-d" );
+        assert.ok( useDefault.entitySimple.hasOwnProperty("creator"));
+        assert.ok( useDefault.entitySimple.simple === "subEntitySimpleValue" );
+        assert.ok( useDefault.entitySimple.entityArray[0].simple === "arr1" );
+        assert.ok( useDefault.entitySimple.entityArray[1].simple === "arr2" );
+        assert.ok( useDefault.entitySimple.entityArray[2].simple === "arr3" );
         
         var useDefaultExport = useDefault.export();
         assert.ok( useDefaultExport.nameOnly      === "a" );
         assert.ok( useDefaultExport.withdefault   === "defaultValue" );
         assert.ok( useDefaultExport.importExport  === "+-b" );
         assert.ok( useDefaultExport.importDefault === "-d" );
+        assert.ok( useDefaultExport.entitySimple.simple === "-subEntitySimpleValue" );
         
         var fullSet = Jazzy.createEntity("TestEntityA",{
             "nameOnly" : "a",
             "importExport" : "b",
             "withdefault"  : "z",
-            "importDefault": "w"
+            "importDefault": "w",
+            "entitySimple" : {
+                'simple' : "subEntitySimpleValue"
+            },
+            
         }); 
         assert.ok( fullSet.nameOnly      === "a" );
         assert.ok( fullSet.withdefault   === "z" );
         assert.ok( fullSet.importExport  === "-b" );
         assert.ok( fullSet.importDefault === "-w" );
+        assert.ok( fullSet.entitySimple.simple === "subEntitySimpleValue" );
+        assert.ok( fullSet.entitySimple.entityArray instanceof Array );
+        assert.ok( fullSet.entitySimple.entityArray.length == 0 );
         
     });
     

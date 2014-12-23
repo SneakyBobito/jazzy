@@ -5,24 +5,47 @@ Jazzy.Entity.prototype = {
 
     export  : function(){
         
-        var exportData = {} ;
+        var exportData = {};
         
         
         for(var i in this.creator._iEntities){
             
             var dataDef = this.creator._iEntities[i];
 
-            var value;
+            var self = this;
+            var handler;
 
-            if( typeof dataDef.export === "function" ){
-                value = dataDef.export.call(this,this[dataDef.name]);
+            if( dataDef.isEntity === true ){
+                
+                handler = function(data){
+                    return data.export();
+                };
+                
             }else{
-                value = this[dataDef.name];
+                if( typeof dataDef.export === "function" ){
+                    handler = function(data){
+                        return dataDef.export.call(self,data);
+                    };
+                }else{
+                    handler = function(data){
+                        return data;
+                    };
+                }
             }
 
+            var value;
+            
+            if(dataDef.isArray === true){
+                value = [];
+                for(var i=0;i<self[dataDef.name].length;i++){
+                    value.push(handler(self[dataDef.name][i]));
+                }
+            }else{
+                value = handler(self[dataDef.name]);
+            }
+            
             exportData[i] = value;
         }
-        
         return exportData;
     },
     
@@ -33,6 +56,7 @@ Jazzy.Entity.prototype = {
             var dataDef = this.creator._iEntities[i] ;
             
             var value = null;
+            
             if( data.hasOwnProperty(dataDef.name) ){
                 value = data[dataDef.name];
             }else{
@@ -41,11 +65,48 @@ Jazzy.Entity.prototype = {
                 }
             }
             
-            if( typeof dataDef.import === "function" ){
-                this[dataDef.name] = dataDef.import.call(this,value,data);
+            
+            var handler;
+            var self = this;
+            
+            if( dataDef.isEntity === true ){
+                
+                if(!dataDef.type){
+                    Jazzy.error("No type in dataDef. Type is required for import : ");
+                    Jazzy.debug(dataDef);
+                    continue;
+                }
+                
+                handler = function(value){
+                    return Jazzy.createEntity(dataDef.type,value);
+                };
+                
             }else{
-                this[dataDef.name] = value;
+                if( typeof dataDef.import === "function" ){
+                    handler = function(value){
+                        return dataDef.import.call(self,value,data);
+                    };
+                }else{
+                    handler = function(value){
+                        return value;
+                    };
+                }
             }
+            
+            if(dataDef.isArray === true){
+                this[dataDef.name] = [];
+                
+                console.log(data);
+                
+                for(var i = 0 ; i<value.length ; i++){
+                    this[dataDef.name].push(handler(value[i]));
+                }
+                
+            }else{
+                this[dataDef.name] = handler(value);
+            }
+            
+            
             
         }
         
@@ -105,10 +166,13 @@ Jazzy.Entity.__parseDataDef = function(dataDef){
         
     Jazzy.applyParams(i,p,{
          
-        name   : undefined,
-        import : null,
-        export : null,
-        default: undefined
+        name        : undefined,
+        import      : null,
+        export      : null,
+        default     : undefined,
+        isEntity    : false,
+        isArray     : false,
+        type        : undefined
         
     });
     
