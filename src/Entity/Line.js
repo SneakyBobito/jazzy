@@ -1,30 +1,13 @@
 Jazzy.Entity.Line = function(){};
 
-Jazzy.Entity.extends(Jazzy.Entity.Line,{
-    
-    "cells": {
-        "export" : function(v){
-            
-            var data=[];
-            
-            for(var i=0;i<v.length;i++){
-                data.push(v[i].export());
-            }
-            
-            return  data;
-        },
-        "import" : function(v,d){
-            
-            var data=[];
-            
-            for(var i=0;i<v.length;i++){
-                data.push(v[i].export());
-            }
-            
-            return  data;
-            
-        }
+Jazzy.Entity.extends(Jazzy.Entity.Line,[
+
+    {
+        "name"      : "cells",
+        "isEntity"  : true,
+        "type"      : "cell",
+        "isArray"   : true
     }
 
-} );
-Jazzy.Entity.registerName("line",Jazzy.Entity.Chord);
+] );
+Jazzy.Entity.registerName("line",Jazzy.Entity.Line);
