@@ -8,7 +8,10 @@
             "/src/Bindable.js",
             "/src/Exception.js",
             "/src/Entity.js",
-            "/src/Entity/Chord.js"
+            "/src/Entity/Chord.js",
+            "/src/Entity/Cell.js",
+            "/src/Entity/Line.js",
+            "/src/Entity/Grid.js"
         ]
     }
 
