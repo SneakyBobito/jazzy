@@ -1,8 +1,9 @@
 Jazzy.Entity.Chord = function(){};
 
-Jazzy.Entity.extends(Jazzy.Entity.Chord,{
+Jazzy.Entity.extends(Jazzy.Entity.Chord,[
     
-    "chord": {
+    {
+        "name"   : "chord",
         "export" : function(v){
             return  v.name();
         },
@@ -10,6 +11,5 @@ Jazzy.Entity.extends(Jazzy.Entity.Chord,{
             return new teoria.chord(v);
         }
     }
-
-} );
+] );
 Jazzy.Entity.registerName("chord",Jazzy.Entity.Chord);
