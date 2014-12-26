@@ -48,6 +48,10 @@ Jazzy.Entity.prototype = {
         }
         return exportData;
     },
+
+    afterImport : function(){
+
+    },
     
     import : function(data){
         
@@ -95,9 +99,7 @@ Jazzy.Entity.prototype = {
             
             if(dataDef.isArray === true){
                 this[dataDef.name] = [];
-                
-                console.log(data);
-                
+
                 for(var i = 0 ; i<value.length ; i++){
                     this[dataDef.name].push(handler(value[i]));
                 }
@@ -106,7 +108,7 @@ Jazzy.Entity.prototype = {
                 this[dataDef.name] = handler(value);
             }
             
-            
+            this.afterImport();
             
         }
         
@@ -115,8 +117,10 @@ Jazzy.Entity.prototype = {
 };
 
 Jazzy.Entity.extends = function (what,entities){
-    what.prototype =  Object.create(Jazzy.Entity.prototype);
-    
+    what.prototype.export  = Jazzy.Entity.prototype.export;
+    what.prototype.import  = Jazzy.Entity.prototype.import;
+    what.prototype.afterImport  = Jazzy.Entity.prototype.afterImport;
+
     what._iEntities = {};
     
     for(var i = 0 ; i < entities.length ; i++){

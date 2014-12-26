@@ -33,10 +33,8 @@ $string = "
 
     }();";
 
-$tmpFile = "/tmp/" . time() . "-jazzy-compression.js";
+$tmpFile =  ROOT_DIR . "/Jazzy.js";
 
 file_put_contents($tmpFile, $string);
 
 exec('java -jar "' . ROOT_DIR . '/scripts/closure-compiler.jar" --language_in ECMASCRIPT5 --js "' . $tmpFile . '" --js_output_file "' . ROOT_DIR . '/Jazzy.min.js"');
-
-unlink($tmpFile);
