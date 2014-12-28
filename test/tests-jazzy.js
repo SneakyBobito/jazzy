@@ -31,7 +31,6 @@
         assert.ok(line.parent("grid") instanceof Jazzy.Entity.Grid );
 
         assert.ok(cell.parent("line") instanceof Jazzy.Entity.Line );
-
         assert.ok(cell.parent("grid") instanceof Jazzy.Entity.Grid );
 
         assert.ok(chord.parent("cell") instanceof Jazzy.Entity.Cell );
@@ -179,6 +178,46 @@
         assert.ok(gridChordRem === chord);
         assert.ok(lineChordRem === chord);
         assert.ok(cellChordRem === chord);
+    });
+
+
+
+    QUnit.test( "Test Chord.update()", function(assert) {
+        var grid = Jazzy.createEntity("grid",DataSample.grid);
+        var cell = grid.get(0,0);
+        var line = cell.parent("line");
+        var chord = cell.get(1);
+
+        var egrid = false;
+        grid.bind("chordUpdated",function(p){
+            egrid = p;
+        });
+
+        var eline = false;
+        line.bind("chordUpdated",function(p){
+            eline = p;
+        });
+
+        var ecell = false;
+        line.bind("chordUpdated",function(p){
+            ecell = p;
+        });
+
+        var echord = false;
+        chord.bind("chordUpdated",function(p){
+            echord = p;
+        });
+
+        chord.update("Fm6");
+
+        assert.ok( chord.chord.name == "Fm6" );
+        assert.ok( egrid == chord );
+        assert.ok( eline == chord );
+        assert.ok( ecell == chord );
+        assert.ok( echord == chord );
+
+        assert.ok( false === chord.update("azerty"));
+
     });
 
     
