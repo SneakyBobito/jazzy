@@ -52,7 +52,32 @@ Jazzy.Entity.prototype = {
     afterImport : function(){
 
     },
-    
+
+    parent : function(name){
+
+        if(undefined == name){
+            return this._iParent[Object.keys(this._iParent)[0]];
+        }
+
+        if( this._iParent.hasOwnProperty(name)){
+
+            return this._iParent[name];
+        }else{
+            var p = this.parent();
+
+            if(p){
+                return p.parent(name);
+            }
+        }
+
+        return null;
+
+    },
+
+    setParent : function(name,o){
+        this._iParent[name] = o;
+    },
+
     import : function(data){
         
         for(var i in this.creator._iEntities ){
@@ -82,7 +107,13 @@ Jazzy.Entity.prototype = {
                 }
                 
                 handler = function(value){
-                    return Jazzy.createEntity(dataDef.type,value);
+                    var e = Jazzy.createEntity(dataDef.type,value);
+
+                    if( typeof dataDef.parentName == "string"){
+                        e.setParent(dataDef.parentName , self);
+                    }
+
+                    return e;
                 };
                 
             }else{
@@ -96,14 +127,16 @@ Jazzy.Entity.prototype = {
                     };
                 }
             }
-            
+
             if(dataDef.isArray === true){
                 this[dataDef.name] = [];
 
-                for(var i = 0 ; i<value.length ; i++){
-                    this[dataDef.name].push(handler(value[i]));
+                if(value instanceof Array){
+                    for(var i = 0 ; i<value.length ; i++){
+                        this[dataDef.name].push(handler(value[i]));
+                    }
                 }
-                
+
             }else{
                 this[dataDef.name] = handler(value);
             }
@@ -112,6 +145,49 @@ Jazzy.Entity.prototype = {
             
         }
         
+    },
+
+
+    addChildHelper : function(data,index,parentName,ElementName,removerMethodName,arrayPropertyName){
+
+        var expectedElementInstance = Jazzy.EntityName[ElementName];
+
+        var e;
+
+        if(data instanceof expectedElementInstance){
+            e = data;
+            var parent = e.parent(parentName);
+            if(parent){
+                parent[removerMethodName](e);
+            }
+        }else
+            e = Jazzy.createEntity(ElementName,data);
+
+        if(index)
+            this[arrayPropertyName].splice(index,0,e);
+        else
+            this[arrayPropertyName].push(e);
+
+        e.setParent(parentName,this);
+
+        return e;
+
+    },
+
+    removeChildHelper : function(data,elementName,arrayPropertyName){
+
+        var i = this[arrayPropertyName].indexOf(data);
+
+        if(i >= 0){
+            var e = this[arrayPropertyName][i];
+            e.setParent(elementName,null);
+            this[arrayPropertyName].splice(i,1);
+
+            return e;
+        }
+
+        return null;
+
     }
   
 };
@@ -120,6 +196,12 @@ Jazzy.Entity.extends = function (what,entities){
     what.prototype.export  = Jazzy.Entity.prototype.export;
     what.prototype.import  = Jazzy.Entity.prototype.import;
     what.prototype.afterImport  = Jazzy.Entity.prototype.afterImport;
+    what.prototype.parent  = Jazzy.Entity.prototype.parent;
+    what.prototype.setParent  = Jazzy.Entity.prototype.setParent;
+    what.prototype.addChildHelper  = Jazzy.Entity.prototype.addChildHelper;
+    what.prototype.removeChildHelper  = Jazzy.Entity.prototype.removeChildHelper;
+
+    Jazzy.Bindable.extends(what);
 
     what._iEntities = {};
     
@@ -147,6 +229,8 @@ Jazzy.createEntity = function(name,data){
     var e = new Jazzy.EntityName[name];
     
     e.creator = Jazzy.EntityName[name];
+
+    e._iParent = {};
     
     if(data){
         e.import(data);
@@ -176,11 +260,11 @@ Jazzy.Entity.__parseDataDef = function(dataDef){
         default     : undefined,
         isEntity    : false,
         isArray     : false,
-        type        : undefined
+        type        : undefined,
+        parentName  : undefined
         
     });
     
     return i;
     
 };
-

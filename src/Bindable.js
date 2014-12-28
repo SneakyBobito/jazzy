@@ -6,7 +6,7 @@ Jazzy.Bindable = function(){};
 
 Jazzy.Bindable.prototype={
     
-    bind : function bind(what,how){
+    bind : function(what,how){
         
         if(!this.bindable_bounds){
             this.bindable_bounds = {};

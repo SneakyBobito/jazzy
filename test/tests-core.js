@@ -126,7 +126,6 @@
             }
             
         });
-        console.log(useDefault);
         assert.ok( useDefault.nameOnly      === "a" );
         assert.ok( useDefault.withdefault   === "defaultValue" );
         assert.ok( useDefault.importExport  === "-b" );
