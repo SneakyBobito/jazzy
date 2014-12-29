@@ -413,6 +413,18 @@ Jazzy.Entity.Chord.prototype = {
         return true;
 
 
+    },
+            
+    coordinate : function(){
+
+        var p = this.parent();
+        
+        var i = p.chords.indexOf(this);
+        
+        var c = p.coordinate();
+        c.push(i);
+        return c;
+        
     }
 
 };
@@ -447,6 +459,17 @@ Jazzy.Entity.Cell.prototype = {
 
     },
 
+    coordinate : function(){
+        
+        var p = this.parent();
+        
+        var i = p.cells.indexOf(this);
+        
+        var c = p.coordinate();
+        c.push(i);
+        return c;
+        
+    },
 
     addChord : function(data,index){
         var parentName = "cell";
@@ -565,6 +588,16 @@ Jazzy.Entity.Line.prototype = {
         else
             return cell.get(ichord);
 
+    },
+            
+    coordinate : function(){
+        
+        var p = this.parent();
+        
+        var i = p.lines.indexOf(this);
+        
+        return [i];
+        
     },
 
 

@@ -15,6 +15,16 @@ Jazzy.Entity.Line.prototype = {
             return cell.get(ichord);
 
     },
+            
+    coordinate : function(){
+        
+        var p = this.parent();
+        
+        var i = p.lines.indexOf(this);
+        
+        return [i];
+        
+    },
 
 
     addCell : function(data,index){

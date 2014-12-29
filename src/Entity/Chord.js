@@ -32,6 +32,18 @@ Jazzy.Entity.Chord.prototype = {
         return true;
 
 
+    },
+            
+    coordinate : function(){
+
+        var p = this.parent();
+        
+        var i = p.chords.indexOf(this);
+        
+        var c = p.coordinate();
+        c.push(i);
+        return c;
+        
     }
 
 };

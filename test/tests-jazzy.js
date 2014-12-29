@@ -220,6 +220,30 @@
 
     });
 
+
+    QUnit.test( "Test coordinate", function(assert) {
+        var grid = Jazzy.createEntity("grid",DataSample.grid);
+
+        var line = Jazzy.createEntity("line",{});
+        grid.addLine(line);
+
+        assert.deepEqual(grid.get(0).coordinate() , [0]);
+        assert.deepEqual(grid.get(1).coordinate() , [1]);
+        assert.deepEqual(grid.get(2).coordinate() , [2]);
+        assert.deepEqual(grid.get(3).coordinate() , [3]);
+        assert.deepEqual(grid.get(4).coordinate() , [4]);
+        
+        
+        assert.deepEqual(grid.get(0,1).coordinate() , [0,1]);
+        assert.deepEqual(grid.get(1,0).coordinate() , [1,0]);
+        assert.deepEqual(grid.get(2,2).coordinate() , [2,2]);
+        
+        
+        assert.deepEqual(grid.get(0,0,1).coordinate() , [0,0,1]);
+        assert.deepEqual(grid.get(0,0,3).coordinate() , [0,0,3]);
+        assert.deepEqual(grid.get(1,0,1).coordinate() , [1,0,1]);
+
+    });
     
     
 })(Jazzy,QUnit);

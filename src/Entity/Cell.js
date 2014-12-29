@@ -15,6 +15,17 @@ Jazzy.Entity.Cell.prototype = {
 
     },
 
+    coordinate : function(){
+        
+        var p = this.parent();
+        
+        var i = p.cells.indexOf(this);
+        
+        var c = p.coordinate();
+        c.push(i);
+        return c;
+        
+    },
 
     addChord : function(data,index){
         var parentName = "cell";
