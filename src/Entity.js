@@ -37,14 +37,14 @@ Jazzy.Entity.prototype = {
             
             if(dataDef.isArray === true){
                 value = [];
-                for(var i=0;i<self[dataDef.name].length;i++){
-                    value.push(handler(self[dataDef.name][i]));
+                for(var ii=0;ii<self[dataDef.name].length;ii++){
+                    value.push(handler(self[dataDef.name][ii]));
                 }
             }else{
                 value = handler(self[dataDef.name]);
             }
-            
-            exportData[i] = value;
+
+            exportData[dataDef.name] = value;
         }
         return exportData;
     },
