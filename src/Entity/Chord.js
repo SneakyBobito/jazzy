@@ -53,7 +53,7 @@ Jazzy.Entity.extends(Jazzy.Entity.Chord,[
     {
         "name"   : "chord",
         "export" : function(v){
-            return  v.name();
+            return  v.name;
         },
         "import" : function(v,d){
             return new teoria.chord(v);
